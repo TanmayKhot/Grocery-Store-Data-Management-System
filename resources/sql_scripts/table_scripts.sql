@@ -1,4 +1,11 @@
-
+CREATE TABLE product_staging_table (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    file_name VARCHAR(255),
+    file_location VARCHAR(255),
+    created_date TIMESTAMP,
+    updated_date TIMESTAMP,
+    status VARCHAR(1)
+)
 
 CREATE TABLE customer (
     customer_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -74,13 +81,18 @@ INSERT INTO product (name, current_price, old_price, created_date, updated_date,
 VALUES
     ('quaker oats', 212, 212, '2022-05-15', NULL, '2025-01-01'),
     ('sugar', 50, 50, '2021-08-10', NULL, '2025-01-01'),
-    ('maida', 20, 20, '2023-03-20', NULL, '2025-01-01'),
-    ('besan', 52, 52, '2020-05-05', NULL, '2025-01-01'),
+    ('rice', 20, 20, '2023-03-20', NULL, '2025-01-01'),
+    ('flour', 52, 52, '2020-05-05', NULL, '2025-01-01'),
     ('refined oil', 110, 110, '2022-01-15', NULL, '2025-01-01'),
-    ('clinic plus', 1.5, 1.5, '2021-09-25', NULL, '2025-01-01'),
-    ('dantkanti', 100, 100, '2023-07-10', NULL, '2025-01-01'),
-    ('nutrella', 40, 40, '2020-11-30', NULL, '2025-01-01');
-
+    ('shampoo', 15, 15, '2021-09-25', NULL, '2025-01-01'),
+    ('toothpaste', 10, 10, '2023-07-10', NULL, '2025-01-01'),
+    ('nutella', 40, 40, '2020-11-30', NULL, '2025-01-01');
+    ('chips', 20, 20, '2022-05-30', NULL, '2025-01-01');
+    ('bread', 25, 25, '2021-06-25', NULL, '2025-01-01');
+    ('pasta', 18, 18, '2022-07-12', NULL, '2025-01-01');
+    ('milk', 5.5, 5.5, '2023-08-18', NULL, '2025-01-01');
+    ('chocolate', 3.2, 3.2, '2022-09-22', NULL, '2025-01-01');
+    ('popcorn', 1.5, 1.5, '2023-10-17', NULL, '2025-01-01');
 
 --sales team table
 CREATE TABLE sales_team (

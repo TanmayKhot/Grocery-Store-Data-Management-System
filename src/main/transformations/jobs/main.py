@@ -6,10 +6,13 @@ from pyspark.sql.functions import concat_ws, lit, expr
 from pyspark.sql.types import StructType, StructField, IntegerType, StringType, DateType, FloatType
 
 from resources.dev import config
+from src.main.delete.local_file_delete import delete_local_file
 from src.main.download.aws_file_download import S3FileDownloader
 from src.main.move.move_files import move_s3_to_s3
 from src.main.read.database_read import DatabaseReader
+from src.main.transformations.jobs.customer_mart_sql_tranform_write import customer_mart_calculation_table_write
 from src.main.transformations.jobs.dimension_tables_join import dimension_tables_join
+from src.main.transformations.jobs.sales_mart_sql_transform_write import sales_mart_calculation_table_write
 from src.main.upload.upload_to_s3 import UploadToS3
 from src.main.utility.encrypt_decrypt import *
 from src.main.utility.s3_client_object import *
@@ -315,6 +318,7 @@ s3_directory = config.s3_sales_datamart_directory
 message = s3_uploader.upload_to_s3(s3_directory, config.bucket_name, config.sales_team_data_mart_local_file)
 logger.info(f"{message}")
 
+logger.info("****************************** Processing parquet files for monthly store data ******************************")
 # Also writing the data in partitions since data files could be huge, hence partitioning by month and sotre_id
 final_sales_team_data_mart_df.write.format("parquet") \
         .option("header", "true")\
@@ -335,7 +339,66 @@ for root, dirs, files in os.walk(config.sales_team_data_mart_partitioned_local_f
         s3_key = f"{s3_prefix}/{current_epoch}/{relative_file_path}"
         s3_client.upload_file(local_file_path, config.bucket_name, s3_key)
 
+# Calculation for customer mart
+# Find out customer total purchase every month (to gain customer insights for personalized offers to reduce customer churn)
+# Write the data to MySQL table
+logger.info("****************************** Calculating monthly purchase amount for customers ******************************")
+customer_mart_calculation_table_write(final_customer_data_mart_df)
+logger.info("****************************** Calculation for customer written into the table")
 
+# Calculation for sales team mart
+# Find out total sales fone by each sales person every month
+# Given the top performer 1% incentive of total sales of the month
+# Write the data into MySQL table
+logger.info("****************************** Calculating monthly incentive for employees ******************************")
+sales_mart_calculation_table_write(final_customer_data_mart_df)
+logger.info("****************************** Calculation for sales employees written into the table")
 
+# Final step - clean up
+# Move the file on S3 to processed folder and delete the local files
+
+source_prefix = config.s3_source_directory
+destination_prefix = config.s3_processed_directory
+message = move_s3_to_s3(s3_client, config.bucket_name, source_prefix, destination_prefix) #(copy and delete)
+logger.info(f"{message}")
+
+logger.info("****************************** Deleting sales data from local ******************************")
+delete_local_file(config.local_directory)
+logger.info("****************************** Deleting customer data from local ******************************")
+delete_local_file(config.customer_data_mart_local_file)
+logger.info("****************************** Deleting sales team partitioned data from local ******************************")
+delete_local_file(config.sales_team_data_mart_partitioned_local_file)
+logger.info("****************************** Deleted all data from local ******************************")
+
+# Update the status of staging table
+update_statements = []
+current_date = datetime.datetime.now()
+formatted_date = current_date.strftime("%Y-%m-%d %H:%M:%S")
+
+if correct_files:
+    for file in correct_files:
+        filename = os.path.basename(file)
+        query = f"""
+                UPDATE {db_name}.{config.product_staging_table}
+                SET status = 'I', updated_date = {formatted_date}
+                WHEREfile_name = {filename}
+                """
+        update_statements.append(query)
+
+    logger.info(f"Update qeury for staging table: {update_statements}")
+    logger.info("****************************** Connecting with MySQL server ******************************")
+    connection = get_mysql_connection()
+    cursor = connection.cursor()
+    logger.info("****************************** MySQL server connected successfully ******************************")
+    for query in update_statements:
+        cursor.execute(query)
+        connection.commit()
+    cursor.close()
+    connection.close()
+else:
+    logger.error("****************************** There is some error in the process ******************************")
+    sys.exit()
+
+input("Press enter to terminate")
 
 

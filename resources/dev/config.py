@@ -1,5 +1,6 @@
 import os
 
+# Encryption details
 key = ""
 iv = ""
 salt = ""
@@ -26,7 +27,7 @@ properties = {
 }
 
 # Table name
-customer_table_name = "customer"
+customer_table = "customer"
 product_staging_table = "product_staging_table"
 product_table = "product"
 sales_team_table = "sales_team"
