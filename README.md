@@ -1,6 +1,31 @@
-```plaintext
-Project structure:-
+---
 
+# Grocery Store Management System: A Data Engineering Project
+
+This project demonstrates the application of data engineering principles to handle large-scale data processing, storage, and analysis in a retail context, providing insights into customer behavior and store operations.
+
+## Project Overview
+
+- **Technologies**: Python, MySQL, AWS, PySpark
+- **Data**: Synthetically generated to simulate real-world grocery store operations
+  - Customer transactions (scalable up to 500,000+ rows)
+  - Store and employee information
+- **Key Features**:
+  - Spark transformations and optimizations
+  - Efficient data partitioning and storage
+  - Robust data modeling
+  - File status management (active/inactive)
+  - Automated file cleanup post-processing
+  - Schema validation
+  - Secure AWS credential handling (encryption/decryption)
+  - Modular functions with detailed logging for easy debugging
+
+## Work flow
+
+## Data modelling
+
+## Project structure
+```plaintext
 spark_project/
 ├── resources/
 │   ├── __init__.py
