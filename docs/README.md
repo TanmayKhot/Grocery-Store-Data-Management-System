@@ -11,7 +11,9 @@ This project demonstrates the application of data engineering principles to hand
 - **Technologies**: Python, MySQL, AWS, PySpark
 - **Data**: Synthetically generated to simulate real-world grocery store operations
   - Customer transactions (scalable to 500,000+ rows)
-  - Store and employee information
+  - Store information
+  - Products information
+  - Employee information
 - **Key Features**:
   - Spark transformations and optimizations
   - Efficient data partitioning and storage
