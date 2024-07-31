@@ -1,6 +1,6 @@
 ---
 
-# Grocery Store Management System: A Data Engineering Project
+# Grocery Store Data Management System: A Data Engineering Project
 
 This project demonstrates the application of data engineering principles to handle large-scale data processing, storage, and analysis in a retail context, providing insights into customer behavior and store operations. The main outcome is 
 - To analyze customer's monthly spending patterns to tailor personalized offers, enhancing customer retention through targeted discounts and promotions.
