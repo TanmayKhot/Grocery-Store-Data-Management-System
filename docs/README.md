@@ -111,7 +111,7 @@ spark_project/
 | `my_sql_session.py` | To create MySQL connection. |
 | **write/** |
 | `database_write.py` | Used to write data into MySQL tables. |
-| `parquet_write.py` | Used to store Spark dataframes in Parquet format. |
+| `parquet_write.py` | Used to store Spark dataframes in Parquet format by partitioning the data according to store_id, and monthly basis for optimized data storage. |
 | **data/** |
 | `extra_column_csv_generated_data.py` | Generate a .csv file with custom rows having an extra column than the expected schema. |
 | `generate_csv_data.py` | Generate a .csv file with custom data and number of rows for product and customer data. |
